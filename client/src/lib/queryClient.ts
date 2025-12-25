@@ -1,5 +1,12 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
-import { apiUrl } from "./config";
+
+// Standard Vite environment check for your API URL
+// In production (Vercel), it uses the site's own address. 
+// In development, it points to your local backend.
+const apiUrl = (path: string) => {
+  const base = import.meta.env.VITE_API_URL || "";
+  return `${base}${path}`;
+};
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -13,7 +20,9 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  // If the URL starts with /api, we format it using our helper
   const fullUrl = url.startsWith("/api") ? apiUrl(url) : url;
+  
   const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
@@ -26,6 +35,7 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
+
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
