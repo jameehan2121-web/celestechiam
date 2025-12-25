@@ -36,9 +36,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // 2. Send the email
     const { data, error } = await resend.emails.send({
-      from: 'Contact Form <onboarding@resend.dev>', // Use this until you verify a domain in Resend
+      from: 'Contact Form <onboarding@resend.dev>', 
       to: [process.env.RECIPIENT_EMAIL || 'celeste.pianist@gmail.com'],
-      reply_to: email,
+      replyTo: email, // Changed from reply_to to replyTo
       subject: `New Inquiry: ${inquiryTypeLabels[type] || 'General'}`,
       html: `
         <h2>New Message from ${name}</h2>
